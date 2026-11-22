@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lead Tech Daily Field Checklist</title>
+  <link rel="icon" href="data:," />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-900 min-h-screen antialiased selection:bg-emerald-200 selection:text-slate-950">
+  <!-- Non-blocking Toast Notifications -->
+  <div
+    id="toastContainer"
+    class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"
+    aria-live="polite"
+  ></div>
+
+  <!-- Reconnection Banner (displayed when returning online with queued reports waiting) -->
+  <div
+    id="reconnectBanner"
+    class="hidden sticky top-0 z-40 bg-emerald-700 text-white border-b border-emerald-800 shadow-md"
+    role="status"
+  >
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5 text-xs sm:text-sm font-semibold">
+        <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300 animate-pulse"></span>
+        <span id="reconnectMessage">Connection restored. Queued reports are ready to send.</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          id="bannerOpenEmailBtn"
+          class="px-3 py-1.5 rounded-lg bg-white text-emerald-950 hover:bg-emerald-50 text-xs font-bold transition cursor-pointer"
+        >
+          Open Email
+        </button>
+        <button
+          type="button"
+          id="dismissReconnectBtn"
+          class="px-2.5 py-1.5 rounded-lg bg-emerald-800/80 hover:bg-emerald-800 text-xs font-semibold text-emerald-100 transition cursor-pointer"
+        >
+          Dismiss
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Header -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 shadow-sm">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0"></span>
+          <span class="text-xs font-semibold uppercase tracking-widest text-emerald-400">
+            Field Operations &bull; Offline Resilient
+          </span>
+        </div>
+        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight mt-0.5 truncate">
+          Lead Tech Daily Field Checklist
+        </h1>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 sm:gap-2.5">
+        <!-- Connectivity Status Pill -->
+        <button
+          type="button"
+          id="connectivityPillBtn"
+          title="Toggle Test Mode or inspect connection state"
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer bg-emerald-950/80 text-emerald-300 border-emerald-700/70"
+        >
+          <span id="connectivityDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span id="connectivityLabel">Online</span>
+        </button>
+
+        <!-- Queue Count Badge -->
+        <button
+          type="button"
+          id="headerQueueBadgeBtn"
+          title="Jump to Offline Report Queue"
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-400/40 transition cursor-pointer tabular-nums"
+        >
+          <span>Queue:</span>
+          <span id="headerQueueCount" class="px-1.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-extrabold leading-none">0</span>
+        </button>
+
+        <!-- Test Mode Toggle -->
+        <button
+          type="button"
+          id="toggleTestModeBtn"
+          aria-expanded="false"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition cursor-pointer"
+        >
+          <span>Test Mode</span>
+          <span id="testModeChevron" class="text-[10px]">&#9660;</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Collapsible Test Mode Bar -->
+  <section id="testModeBar" class="hidden bg-indigo-950 text-indigo-100 border-b border-indigo-800 shadow-inner">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4 space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <p class="text-xs font-extrabold uppercase tracking-wider text-indigo-300">
+            Test Mode Controls
+          </p>
+          <p class="text-[11px] text-indigo-200/80">
+            Quick-fill valid field data, cycle or select installation branches, toggle simulated offline mode, or reset storage.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            id="simOfflineToggleBtn"
+            class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition cursor-pointer"
+          >
+            Simulate Offline: OFF
+          </button>
+          <button
+            type="button"
+            id="cycleBranchBtn"
+            class="px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-700 hover:bg-indigo-600 text-white border border-indigo-500/60 transition cursor-pointer"
+          >
+            Cycle Branch
+          </button>
+          <button
+            type="button"
+            id="resetStorageBtn"
+            class="px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition cursor-pointer"
+          >
+            Reset Storage &amp; Draft
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick-Fill Valid Data for Each Installation Type -->
+      <div>
+        <span class="block text-[11px] font-bold uppercase tracking-wider text-indigo-300 mb-1.5">
+          Quick-Fill Valid Data by Installation Type:
+        </span>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+          <button type="button" data-quick-branch="Access Wire Pull" class="quick-branch-btn px-2.5 py-2 rounded-xl bg-indigo-900/90 hover:bg-indigo-800 border border-indigo-700 text-xs font-bold text-white transition cursor-pointer text-center">
+            Access Wire Pull
+          </button>
+          <button type="button" data-quick-branch="ADO Wire Pull" class="quick-branch-btn px-2.5 py-2 rounded-xl bg-indigo-900/90 hover:bg-indigo-800 border border-indigo-700 text-xs font-bold text-white transition cursor-pointer text-center">
+            ADO Wire Pull
+          </button>
+          <button type="button" data-quick-branch="Security Rack Wire Pull" class="quick-branch-btn px-2.5 py-2 rounded-xl bg-indigo-900/90 hover:bg-indigo-800 border border-indigo-700 text-xs font-bold text-white transition cursor-pointer text-center">
+            Security Rack Wire Pull
+          </button>
+          <button type="button" data-quick-branch="Door" class="quick-branch-btn px-2.5 py-2 rounded-xl bg-indigo-900/90 hover:bg-indigo-800 border border-indigo-700 text-xs font-bold text-white transition cursor-pointer text-center">
+            Door
+          </button>
+          <button type="button" data-quick-branch="Camera" class="quick-branch-btn px-2.5 py-2 rounded-xl bg-indigo-900/90 hover:bg-indigo-800 border border-indigo-700 text-xs font-bold text-white transition cursor-pointer text-center">
+            Camera
+          </button>
+          <button type="button" data-quick-branch="Intercom" class="quick-branch-btn px-2.5 py-2 rounded-xl bg-indigo-900/90 hover:bg-indigo-800 border border-indigo-700 text-xs font-bold text-white transition cursor-pointer text-center">
+            Intercom
+          </button>
+        </div>
+      </div>
+
+      <!-- Bulk Answer Helpers for Active Branch -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-300 mr-1">Active Branch Answers:</span>
+        <button type="button" id="testAllYesBtn" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition cursor-pointer">
+          All Yes
+        </button>
+        <button type="button" id="testAlternateBtn" class="px-2.5 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition cursor-pointer">
+          Alternate Answers
+        </button>
+        <button type="button" id="testAllNoBtn" class="px-2.5 py-1 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold transition cursor-pointer">
+          All No
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <!-- SECTION 1: Recipient Email, Auto Time & Job Selectors -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden">
+      <div class="px-5 py-3.5 bg-slate-50 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-lg bg-slate-900 text-white text-xs font-bold flex items-center justify-center">1</span>
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700">Recipient, Auto Time &amp; Assignment</h2>
+        </div>
+        <span id="draftSaveBadge" class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+          Draft saved in localStorage
+        </span>
+      </div>
+
+      <div class="p-5 space-y-5">
+        <!-- Recipient Email (Required) -->
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <label for="recipientEmail" class="block text-xs font-bold uppercase tracking-wide text-slate-600">
+              Recipient Email <span class="text-rose-600">*</span>
+            </label>
+            <span class="text-[11px] font-semibold text-slate-500">
+              Required &bull; Saved in localStorage
+            </span>
+          </div>
+          <input
+            type="email"
+            id="recipientEmail"
+            value=""
+            required
+            placeholder="Enter recipient email address..."
+            class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+          />
+          <p id="recipientEmailError" class="hidden mt-1 text-xs font-semibold text-rose-600">
+            Please enter a valid recipient email address before emailing, copying, or queueing a report.
+          </p>
+          <p class="text-[11px] text-slate-500 mt-1.5">
+            Enter the email address to send to. Your entry is saved automatically in <code class="text-slate-700">localStorage</code> and used for <code class="text-slate-700">mailto:</code> and reports.
+          </p>
+        </div>
+
+        <!-- Auto Time & Manual Refresh -->
+        <div class="bg-sky-50/60 border border-sky-200/80 rounded-xl p-3.5">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-sky-900">Auto Time</span>
+              <span id="liveClockBadge" class="text-[11px] font-mono font-semibold text-sky-800 bg-sky-100 border border-sky-200 px-2 py-0.5 rounded-full tabular-nums">
+                Clock: --:--:--
+              </span>
+            </div>
+            <button
+              type="button"
+              id="refreshTimestampBtn"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-700 hover:bg-sky-800 active:scale-[0.99] text-white shadow-2xs transition cursor-pointer"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>Refresh Time</span>
+            </button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="autoTimeDisplay" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                Captured Auto Time
+              </label>
+              <input
+                type="text"
+                id="autoTimeDisplay"
+                readonly
+                class="w-full rounded-xl border border-sky-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-mono font-semibold text-slate-800 tabular-nums focus:outline-none"
+              />
+            </div>
+            <div>
+              <label for="reportDate" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                Report Date
+              </label>
+              <input
+                type="date"
+                id="reportDate"
+                class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+              />
+            </div>
+          </div>
+          <p id="timestampMetaText" class="text-[11px] text-slate-500 mt-1.5">
+            Automatically captured on load. Click Refresh Time anytime to stamp the current time.
+          </p>
+        </div>
+
+        <!-- DC Selector & Tech Name -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- DC Selector (Exact 12 options in order, no DC3) -->
+          <div>
+            <label for="dcSelect" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+              DC Selector <span class="text-rose-600">*</span>
+            </label>
+            <select
+              id="dcSelect"
+              required
+              class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+            >
+              <option value="" disabled selected>Select DC...</option>
+              <option value="DC1 Temp Camera">DC1 Temp Camera</option>
+              <option value="DC1 TFO">DC1 TFO</option>
+              <option value="DC2 Temp Camera">DC2 Temp Camera</option>
+              <option value="DC2 TFO">DC2 TFO</option>
+              <option value="DC4 Temp Camera">DC4 Temp Camera</option>
+              <option value="DC4 TFO">DC4 TFO</option>
+              <option value="DC5 Temp Camera">DC5 Temp Camera</option>
+              <option value="DC5 TFO">DC5 TFO</option>
+              <option value="DC6 Temp Camera">DC6 Temp Camera</option>
+              <option value="DC6 TFO">DC6 TFO</option>
+              <option value="DC7 Base Build">DC7 Base Build</option>
+              <option value="DC7 TFO">DC7 TFO</option>
+            </select>
+            <p id="dcError" class="hidden mt-1 text-xs font-semibold text-rose-600">
+              Please select a DC from DC Selector.
+            </p>
+          </div>
+
+          <!-- Tech Name -->
+          <div>
+            <label for="techSelect" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+              Tech Name <span class="text-rose-600">*</span>
+            </label>
+            <select
+              id="techSelect"
+              required
+              class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+            >
+              <option value="" disabled selected>Select Tech...</option>
+              <option value="Tyler">Tyler</option>
+              <option value="Gabe">Gabe</option>
+              <option value="Andrew">Andrew</option>
+            </select>
+            <p id="techError" class="hidden mt-1 text-xs font-semibold text-rose-600">
+              Please select a Tech Name.
+            </p>
+          </div>
+        </div>
+
+        <!-- Installation Type -->
+        <div>
+          <label for="installTypeSelect" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+            Installation Type <span class="text-rose-600">*</span>
+          </label>
+          <div class="relative">
+            <select
+              id="installTypeSelect"
+              required
+              class="w-full appearance-none rounded-xl border-2 border-slate-800 bg-slate-900 text-white px-3.5 py-3 pr-10 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 transition shadow-sm"
+            >
+              <option value="" disabled selected>Select Installation Type...</option>
+              <option value="Access Wire Pull">Access Wire Pull</option>
+              <option value="ADO Wire Pull">ADO Wire Pull</option>
+              <option value="Security Rack Wire Pull">Security Rack Wire Pull</option>
+              <option value="Door">Door</option>
+              <option value="Camera">Camera</option>
+              <option value="Intercom">Intercom</option>
+            </select>
+            <svg class="w-4 h-4 text-emerald-400 pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </div>
+          <p id="installTypeError" class="hidden mt-1 text-xs font-semibold text-rose-600">
+            Please select an Installation Type.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: Mandatory "Device & Location" Section -->
+    <section id="deviceLocationSection" class="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden">
+      <div class="px-5 py-3.5 bg-slate-50 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-lg bg-slate-900 text-white text-xs font-bold flex items-center justify-center">2</span>
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700">Device &amp; Location</h2>
+        </div>
+        <span class="text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-0.5 rounded-full">
+          Required
+        </span>
+      </div>
+
+      <div class="p-5 space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Device Name -->
+          <div>
+            <label for="deviceNameInput" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+              Device Name <span class="text-rose-600">*</span>
+            </label>
+            <input
+              type="text"
+              id="deviceNameInput"
+              required
+              placeholder="Enter Device Name"
+              class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+            />
+            <p id="deviceNameError" class="hidden mt-1 text-xs font-semibold text-rose-600">
+              Device Name is required before emailing, copying, or queueing a report.
+            </p>
+          </div>
+
+          <!-- Location -->
+          <div>
+            <label for="locationInput" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+              Location <span class="text-rose-600">*</span>
+            </label>
+            <input
+              type="text"
+              id="locationInput"
+              required
+              placeholder="Enter Location"
+              class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+            />
+            <p id="locationError" class="hidden mt-1 text-xs font-semibold text-rose-600">
+              Location is required before emailing, copying, or queueing a report.
+            </p>
+          </div>
+        </div>
+
+        <div
+          id="deviceLocationFeedback"
+          class="hidden rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-semibold text-rose-700"
+        ></div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Checklist Questions, Live Completion Percentage & Independent "Completed" Toggle -->
+    <section id="checklistSection" class="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden">
+      <div class="px-5 py-3.5 bg-slate-50 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-2.5">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-lg bg-slate-900 text-white text-xs font-bold flex items-center justify-center">3</span>
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700">
+            Checklist Questions
+            <span id="activeBranchTag" class="hidden ml-1.5 px-2 py-0.5 rounded-md text-xs font-bold bg-slate-900 text-emerald-400 normal-case"></span>
+          </h2>
+          <span id="branchRequiredBadge" class="hidden text-[11px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full">
+            All Required
+          </span>
+        </div>
+
+        <!-- Live Completion Percentage + Independent "Completed" Toggle -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <div class="flex items-center gap-2">
+            <span id="completionText" class="text-xs font-bold text-slate-700 tabular-nums">0% (0/0 Yes)</span>
+            <div class="w-24 sm:w-28 h-2.5 bg-slate-200 rounded-full overflow-hidden">
+              <div id="completionBar" class="h-full bg-emerald-500 transition-all duration-300 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            id="completedToggleBtn"
+            aria-pressed="false"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer bg-white text-slate-700 border-slate-300 hover:bg-slate-100"
+          >
+            <span id="completedCheckBox" class="w-4 h-4 rounded border border-slate-400 flex items-center justify-center text-[11px] leading-none bg-white text-transparent">&#10003;</span>
+            <span>Completed</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-5">
+        <div id="emptyQuestionsState" class="text-center py-9 px-4 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/60">
+          <p class="text-sm font-semibold text-slate-600">Select an Installation Type above.</p>
+          <p class="text-xs text-slate-400 mt-1">
+            Required checklist questions for the chosen Installation Type will appear here.
+          </p>
+        </div>
+
+        <div id="questionsContainer" class="space-y-3 hidden"></div>
+
+        <div
+          id="questionsValidationFeedback"
+          class="hidden mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-semibold text-rose-700"
+        ></div>
+
+        <!-- Notes (Optional) -->
+        <div class="mt-5 pt-4 border-t border-slate-100">
+          <label for="notesInput" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+            Notes <span class="text-[11px] font-medium normal-case text-slate-400">(Optional)</span>
+          </label>
+          <textarea
+            id="notesInput"
+            rows="3"
+            placeholder="Optional notes..."
+            class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+          ></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: Report Preview & Actions -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden">
+      <div class="px-5 py-3.5 bg-slate-50 border-b border-slate-200/80 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-lg bg-slate-900 text-white text-xs font-bold flex items-center justify-center">4</span>
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700">Report Preview &amp; Actions</h2>
+        </div>
+        <span class="text-[11px] font-semibold text-slate-500">Live summary</span>
