@@ -174,4 +174,1978 @@
 
       <!-- Bulk Answer Helpers for Active Branch -->
       <div class="flex flex-wrap items-center gap-2 pt-1">
-        <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-300 mr-1">Active Branch Answers:
+        <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-300 mr-1">Active Branch Answers:</span>
+        <button type="button" id="testAllYesBtn" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition cursor-pointer">
+          All Yes
+        </button>
+        <button type="button" id="testAlternateBtn" class="px-2.5 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition cursor-pointer">
+          Alternate Yes/No
+        </button>
+        <button type="button" id="testAllNoBtn" class="px-2.5 py-1 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold transition cursor-pointer">
+          All No
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <!-- SECTION 1: Recipient Email, Auto Time & Job Selectors -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden">
+      <div class="px-5 py-3.5 bg-slate-50 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-lg bg-slate-900 text-white text-xs font-bold flex items-center justify-center">1</span>
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700">Recipient, Auto Time &amp; Assignment</h2>
+        </div>
+        <span id="draftSaveBadge" class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+          Draft saved in localStorage
+        </span>
+      </div>
+
+      <div class="p-5 space-y-5">
+        <!-- Recipient Email -->
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <label for="recipientEmail" class="block text-xs font-bold uppercase tracking-wide text-slate-600">
+              Recipient Email
+            </label>
+            <span class="text-[11px] font-semibold text-slate-500">
+              Persisted in localStorage
+            </span>
+          </div>
+          <input
+            type="email"
+            id="recipientEmail"
+            value="raymiet2@gmail.com"
+            placeholder="raymiet2@gmail.com"
+            class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+          />
+          <p class="text-[11px] text-slate-500 mt-1.5">
+            Default recipient is <span class="font-semibold text-slate-700">raymiet2@gmail.com</span>. Edits are saved automatically to <code class="text-slate-700">localStorage</code> and used in <code class="text-slate-700">mailto:</code> and reports.
+          </p>
+        </div>
+
+        <!-- Auto Time & Manual Refresh -->
+        <div class="bg-sky-50/60 border border-sky-200/80 rounded-xl p-3.5">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-sky-900">Auto Time</span>
+              <span id="liveClockBadge" class="text-[11px] font-mono font-semibold text-sky-800 bg-sky-100 border border-sky-200 px-2 py-0.5 rounded-full tabular-nums">
+                Clock: --:--:--
+              </span>
+            </div>
+            <button
+              type="button"
+              id="refreshTimestampBtn"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-700 hover:bg-sky-800 active:scale-[0.99] text-white shadow-2xs transition cursor-pointer"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>Refresh Time</span>
+            </button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="autoTimeDisplay" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                Captured Auto Time
+              </label>
+              <input
+                type="text"
+                id="autoTimeDisplay"
+                readonly
+                class="w-full rounded-xl border border-sky-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-mono font-semibold text-slate-800 tabular-nums focus:outline-none"
+              />
+            </div>
+            <div>
+              <label for="reportDate" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                Report Date
+              </label>
+              <input
+                type="date"
+                id="reportDate"
+                class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+              />
+            </div>
+          </div>
+          <p id="timestampMetaText" class="text-[11px] text-slate-500 mt-1.5">
+            Automatically captured on load. Click Refresh Time anytime to stamp the current time.
+          </p>
+        </div>
+
+        <!-- DC Selector & Tech Name -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- DC Selector (Exact 12 options in order, no DC3) -->
+          <div>
+            <label for="dcSelect" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+              DC Selector <span class="text-rose-600">*</span>
+            </label>
+            <select
+              id="dcSelect"
+              required
+              class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+            >
+              <option value="" disabled selected>Select DC...</option>
+              <option value="DC1 Temp Camera">DC1 Temp Camera</option>
+              <option value="DC1 TFO">DC1 TFO</option>
+              <option value="DC2 Temp Camera">DC2 Temp Camera</option>
+              <option value="DC2 TFO">DC2 TFO</option>
+              <option value="DC4 Temp Camera">DC4 Temp Camera</option>
+              <option value="DC4 TFO">DC4 TFO</option>
+              <option value="DC5 Temp Camera">DC5 Temp Camera</option>
+              <option value="DC5 TFO">DC5 TFO</option>
+              <option value="DC6 Temp Camera">DC6 Temp Camera</option>
+              <option value="DC6 TFO">DC6 TFO</option>
+              <option value="DC7 Base Build">DC7 Base Build</option>
+              <option value="DC7 TFO">DC7 TFO</option>
+            </select>
+            <p id="dcError" class="hidden mt-1 text-xs font-semibold text-rose-600">
+              Please select a DC from DC Selector.
+            </p>
+          </div>
+
+          <!-- Tech Name -->
+          <div>
+            <label for="techSelect" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+              Tech Name <span class="text-rose-600">*</span>
+            </label>
+            <select
+              id="techSelect"
+              required
+              class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+            >
+              <option value="" disabled selected>Select Tech...</option>
+              <option value="Tyler">Tyler</option>
+              <option value="Gabe">Gabe</option>
+              <option value="Andrew">Andrew</option>
+            </select>
+            <p id="techError" class="hidden mt-1 text-xs font-semibold text-rose-600">
+              Please select a Tech Name.
+            </p>
+          </div>
+        </div>
+
+        <!-- Installation Type -->
+        <div>
+          <label for="installTypeSelect" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+            Installation Type <span class="text-rose-600">*</span>
+          </label>
+          <div class="relative">
+            <select
+              id="installTypeSelect"
+              required
+              class="w-full appearance-none rounded-xl border-2 border-slate-800 bg-slate-900 text-white px-3.5 py-3 pr-10 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 transition shadow-sm"
+            >
+              <option value="" disabled selected>Select Installation Type...</option>
+              <option value="Access Wire Pull">Access Wire Pull</option>
+              <option value="ADO Wire Pull">ADO Wire Pull</option>
+              <option value="Security Rack Wire Pull">Security Rack Wire Pull</option>
+              <option value="Door">Door</option>
+              <option value="Camera">Camera</option>
+              <option value="Intercom">Intercom</option>
+            </select>
+            <svg class="w-4 h-4 text-emerald-400 pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </div>
+          <p id="installTypeError" class="hidden mt-1 text-xs font-semibold text-rose-600">
+            Please select an Installation Type.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: Mandatory "Device & Location" Section -->
+    <section id="deviceLocationSection" class="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden">
+      <div class="px-5 py-3.5 bg-slate-50 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-lg bg-slate-900 text-white text-xs font-bold flex items-center justify-center">2</span>
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700">Device &amp; Location</h2>
+        </div>
+        <span class="text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-0.5 rounded-full">
+          Required
+        </span>
+      </div>
+
+      <div class="p-5 space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Device Name -->
+          <div>
+            <label for="deviceNameInput" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+              Device Name <span class="text-rose-600">*</span>
+            </label>
+            <input
+              type="text"
+              id="deviceNameInput"
+              required
+              placeholder="Enter Device Name"
+              class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+            />
+            <p id="deviceNameError" class="hidden mt-1 text-xs font-semibold text-rose-600">
+              Device Name is required before emailing, copying, or queueing a report.
+            </p>
+          </div>
+
+          <!-- Location -->
+          <div>
+            <label for="locationInput" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+              Location <span class="text-rose-600">*</span>
+            </label>
+            <input
+              type="text"
+              id="locationInput"
+              required
+              placeholder="Enter Location"
+              class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+            />
+            <p id="locationError" class="hidden mt-1 text-xs font-semibold text-rose-600">
+              Location is required before emailing, copying, or queueing a report.
+            </p>
+          </div>
+        </div>
+
+        <div
+          id="deviceLocationFeedback"
+          class="hidden rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-semibold text-rose-700"
+        ></div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Yes/No Checklist, Live Completion Percentage & Independent "Completed" Toggle -->
+    <section id="checklistSection" class="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden">
+      <div class="px-5 py-3.5 bg-slate-50 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-2.5">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-lg bg-slate-900 text-white text-xs font-bold flex items-center justify-center">3</span>
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700">
+            Checklist Questions
+            <span id="activeBranchTag" class="hidden ml-1.5 px-2 py-0.5 rounded-md text-xs font-bold bg-slate-900 text-emerald-400 normal-case"></span>
+          </h2>
+          <span id="branchRequiredBadge" class="hidden text-[11px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full">
+            All Yes/No Required
+          </span>
+        </div>
+
+        <!-- Live Completion Percentage + Independent "Completed" Toggle -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <div class="flex items-center gap-2">
+            <span id="completionText" class="text-xs font-bold text-slate-700 tabular-nums">0% (0/0 Yes)</span>
+            <div class="w-24 sm:w-28 h-2.5 bg-slate-200 rounded-full overflow-hidden">
+              <div id="completionBar" class="h-full bg-emerald-500 transition-all duration-300 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            id="completedToggleBtn"
+            aria-pressed="false"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer bg-white text-slate-700 border-slate-300 hover:bg-slate-100"
+          >
+            <span id="completedCheckBox" class="w-4 h-4 rounded border border-slate-400 flex items-center justify-center text-[11px] leading-none bg-white text-transparent">✓</span>
+            <span>Completed</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-5">
+        <div id="emptyQuestionsState" class="text-center py-9 px-4 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/60">
+          <p class="text-sm font-semibold text-slate-600">Select an Installation Type above</p>
+          <p class="text-xs text-slate-400 mt-1">
+            Required Yes/No questions for the chosen Installation Type will appear here.
+          </p>
+        </div>
+
+        <div id="questionsContainer" class="space-y-3 hidden"></div>
+
+        <div
+          id="questionsValidationFeedback"
+          class="hidden mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-semibold text-rose-700"
+        ></div>
+
+        <!-- Notes (Optional) -->
+        <div class="mt-5 pt-4 border-t border-slate-100">
+          <label for="notesInput" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+            Notes <span class="text-[11px] font-medium normal-case text-slate-400">(Optional)</span>
+          </label>
+          <textarea
+            id="notesInput"
+            rows="3"
+            placeholder="Optional notes..."
+            class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition"
+          ></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: Report Preview & Actions -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden">
+      <div class="px-5 py-3.5 bg-slate-50 border-b border-slate-200/80 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-lg bg-slate-900 text-white text-xs font-bold flex items-center justify-center">4</span>
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700">Report Preview &amp; Actions</h2>
+        </div>
+        <span class="text-[11px] font-semibold text-slate-500">Live summary</span>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div class="rounded-xl bg-slate-900 text-slate-100 p-4 font-mono text-xs sm:text-[13px] leading-relaxed overflow-x-auto border border-slate-800 shadow-inner">
+          <div class="pb-2.5 mb-2.5 border-b border-slate-800 space-y-1">
+            <div class="flex gap-2">
+              <span class="text-slate-400 select-none shrink-0">To:</span>
+              <span id="previewTo" class="text-emerald-400 font-semibold break-all">raymiet2@gmail.com</span>
+            </div>
+            <div class="flex gap-2">
+              <span class="text-slate-400 select-none shrink-0">Subject:</span>
+              <span id="previewSubject" class="text-amber-300 font-semibold break-words">[Lead Tech Daily Field Checklist] ...</span>
+            </div>
+          </div>
+          <pre id="previewBody" class="whitespace-pre-wrap break-words text-slate-200 font-mono text-xs sm:text-[13px]"></pre>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+          <!-- Open Email (mailto:) -->
+          <button
+            type="button"
+            id="openEmailBtn"
+            class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold text-sm px-4 py-3.5 shadow-sm transition cursor-pointer"
+          >
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <span>Open Email</span>
+          </button>
+
+          <!-- Copy Report -->
+          <button
+            type="button"
+            id="copyReportBtn"
+            class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white font-bold text-sm px-4 py-3.5 shadow-sm transition cursor-pointer"
+          >
+            <svg id="copyIconDefault" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <svg id="copyIconSuccess" class="w-4 h-4 shrink-0 hidden text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <span id="copyBtnLabel">Copy Report</span>
+          </button>
+
+          <!-- Queue / Save Offline Report -->
+          <button
+            type="button"
+            id="queueOfflineReportBtn"
+            class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-[0.99] text-slate-950 font-bold text-sm px-4 py-3.5 shadow-sm transition cursor-pointer"
+          >
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+            </svg>
+            <span>Queue / Save Offline Report</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: Offline Report Queue Management -->
+    <section id="offlineQueueSection" class="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden">
+      <div class="px-5 py-3.5 bg-slate-50 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-lg bg-amber-500 text-slate-950 text-xs font-extrabold flex items-center justify-center tabular-nums">
+            <span id="queueSectionBadgeCount">0</span>
+          </span>
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700">Offline Report Queue</h2>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <button
+            type="button"
+            id="downloadQueueTxtBtn"
+            class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-900 disabled:opacity-40 disabled:cursor-not-allowed text-white transition cursor-pointer"
+          >
+            Download .txt
+          </button>
+          <button
+            type="button"
+            id="clearAllQueueBtn"
+            class="px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-50 hover:bg-rose-100 disabled:opacity-40 disabled:cursor-not-allowed text-rose-700 border border-rose-200 transition cursor-pointer"
+          >
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <div class="p-5">
+        <div id="offlineQueueEmpty" class="text-center py-7 px-4 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/60">
+          <p class="text-sm font-semibold text-slate-600">No reports in Offline Report Queue</p>
+          <p class="text-xs text-slate-400 mt-1">
+            Use <span class="font-semibold text-slate-600">Queue / Save Offline Report</span> to store reports locally in <code class="text-slate-600">localStorage</code>.
+          </p>
+        </div>
+
+        <div id="offlineQueueList" class="space-y-3 hidden"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // =========================================================================
+    // Storage Keys & Default Recipient
+    // =========================================================================
+    const DEFAULT_RECIPIENT_EMAIL = 'raymiet2@gmail.com';
+    const STORAGE_KEY_EMAIL = 'lead_tech_checklist_recipient_email_v1';
+    const STORAGE_KEY_DRAFT = 'lead_tech_checklist_draft_v1';
+    const STORAGE_KEY_QUEUE = 'lead_tech_checklist_queue_v1';
+
+    // =========================================================================
+    // Exact Installation Types & Exact Yes/No Checklist Questions (Unaltered)
+    // =========================================================================
+    const INSTALLATION_TYPES = [
+      'Access Wire Pull',
+      'ADO Wire Pull',
+      'Security Rack Wire Pull',
+      'Door',
+      'Camera',
+      'Intercom'
+    ];
+
+    const CHECKLIST_QUESTIONS = {
+      'Access Wire Pull': [
+        { id: 'awp_1', label: 'is string in pathway' }
+      ],
+      'ADO Wire Pull': [
+        { id: 'ado_1', label: 'is string in pathway' }
+      ],
+      'Security Rack Wire Pull': [
+        { id: 'srwp_1', label: 'is string in pathway' }
+      ],
+      'Door': [
+        { id: 'door_1', label: 'is drywall installed' },
+        { id: 'door_2', label: 'is wall painted' },
+        { id: 'door_3', label: 'is Access Wire pulled' },
+        { id: 'door_4', label: 'is CR installed' },
+        { id: 'door_5', label: 'is BR installed' },
+        { id: 'door_6', label: 'is sounder installed' },
+        { id: 'door_7', label: 'is DC installed' },
+        { id: 'door_8', label: 'is Rex and Lock terminaated' }
+      ],
+      'Camera': [
+        { id: 'cam_1', label: 'is Jbox installed' },
+        { id: 'cam_2', label: 'is Mud Ring installed' },
+        { id: 'cam_3', label: 'is Cat6 pulled' },
+        { id: 'cam_4', label: 'is Camera installed' }
+      ],
+      'Intercom': [
+        { id: 'int_1', label: 'is Drywall installed' },
+        { id: 'int_2', label: 'Is wall painted' },
+        { id: 'int_3', label: 'is Cat6 pulled' },
+        { id: 'int_4', label: 'Is Access Wire Pulled' },
+        { id: 'int_5', label: 'is Intercom installed' }
+      ]
+    };
+
+    // Sample data for Test Mode quick-fill
+    const TEST_PRESETS = {
+      'Access Wire Pull': {
+        dc: 'DC1 Temp Camera',
+        techName: 'Tyler',
+        deviceName: 'AWP-101',
+        location: 'Data Hall 1 - Pathway A',
+        completed: true,
+        notes: 'Pull string verified along pathway.',
+        answers: { awp_1: 'Yes' }
+      },
+      'ADO Wire Pull': {
+        dc: 'DC2 Temp Camera',
+        techName: 'Gabe',
+        deviceName: 'ADO-204',
+        location: 'Data Hall 2 - East Corridor',
+        completed: true,
+        notes: 'String in pathway checked.',
+        answers: { ado_1: 'Yes' }
+      },
+      'Security Rack Wire Pull': {
+        dc: 'DC4 Temp Camera',
+        techName: 'Andrew',
+        deviceName: 'SR-04-A',
+        location: 'Security Room 4 - Rack A',
+        completed: false,
+        notes: 'String verified in rack pathway.',
+        answers: { srwp_1: 'Yes' }
+      },
+      'Door': {
+        dc: 'DC5 Temp Camera',
+        techName: 'Tyler',
+        deviceName: 'Door-502',
+        location: 'Data Hall 5 - Entry 02',
+        completed: false,
+        notes: 'Door hardware check in progress.',
+        answers: {
+          door_1: 'Yes',
+          door_2: 'Yes',
+          door_3: 'Yes',
+          door_4: 'Yes',
+          door_5: 'No',
+          door_6: 'No',
+          door_7: 'No',
+          door_8: 'No'
+        }
+      },
+      'Camera': {
+        dc: 'DC6 Temp Camera',
+        techName: 'Gabe',
+        deviceName: 'Cam-610',
+        location: 'Data Hall 6 - North Aisle',
+        completed: true,
+        notes: 'Camera mounted and online.',
+        answers: {
+          cam_1: 'Yes',
+          cam_2: 'Yes',
+          cam_3: 'Yes',
+          cam_4: 'Yes'
+        }
+      },
+      'Intercom': {
+        dc: 'DC7 Base Build',
+        techName: 'Andrew',
+        deviceName: 'IC-701',
+        location: 'DC7 - Main Entry',
+        completed: true,
+        notes: 'Intercom installed and tested.',
+        answers: {
+          int_1: 'Yes',
+          int_2: 'Yes',
+          int_3: 'Yes',
+          int_4: 'Yes',
+          int_5: 'Yes'
+        }
+      }
+    };
+
+    // =========================================================================
+    // Application State
+    // =========================================================================
+    const state = {
+      recipientEmail: DEFAULT_RECIPIENT_EMAIL,
+      autoTime: '',
+      reportDate: '',
+      dc: '',
+      techName: '',
+      installType: '',
+      deviceName: '',
+      location: '',
+      completed: false,
+      notes: '',
+      answers: {},
+      showValidationErrors: false,
+      isOnline: typeof navigator !== 'undefined' ? Boolean(navigator.onLine) : true,
+      simulatedOffline: false,
+      testModeOpen: false,
+      reconnectDismissed: false,
+      queue: []
+    };
+
+    // =========================================================================
+    // DOM Element References
+    // =========================================================================
+    const toastContainerEl = document.getElementById('toastContainer');
+    const reconnectBannerEl = document.getElementById('reconnectBanner');
+    const reconnectMessageEl = document.getElementById('reconnectMessage');
+    const bannerOpenEmailBtnEl = document.getElementById('bannerOpenEmailBtn');
+    const dismissReconnectBtnEl = document.getElementById('dismissReconnectBtn');
+
+    const connectivityPillBtnEl = document.getElementById('connectivityPillBtn');
+    const connectivityDotEl = document.getElementById('connectivityDot');
+    const connectivityLabelEl = document.getElementById('connectivityLabel');
+    const headerQueueBadgeBtnEl = document.getElementById('headerQueueBadgeBtn');
+    const headerQueueCountEl = document.getElementById('headerQueueCount');
+    const toggleTestModeBtnEl = document.getElementById('toggleTestModeBtn');
+    const testModeChevronEl = document.getElementById('testModeChevron');
+
+    const testModeBarEl = document.getElementById('testModeBar');
+    const simOfflineToggleBtnEl = document.getElementById('simOfflineToggleBtn');
+    const cycleBranchBtnEl = document.getElementById('cycleBranchBtn');
+    const resetStorageBtnEl = document.getElementById('resetStorageBtn');
+    const testAllYesBtnEl = document.getElementById('testAllYesBtn');
+    const testAlternateBtnEl = document.getElementById('testAlternateBtn');
+    const testAllNoBtnEl = document.getElementById('testAllNoBtn');
+
+    const draftSaveBadgeEl = document.getElementById('draftSaveBadge');
+    const recipientEmailEl = document.getElementById('recipientEmail');
+    const liveClockBadgeEl = document.getElementById('liveClockBadge');
+    const refreshTimestampBtnEl = document.getElementById('refreshTimestampBtn');
+    const autoTimeDisplayEl = document.getElementById('autoTimeDisplay');
+    const reportDateEl = document.getElementById('reportDate');
+    const timestampMetaTextEl = document.getElementById('timestampMetaText');
+
+    const dcSelectEl = document.getElementById('dcSelect');
+    const dcErrorEl = document.getElementById('dcError');
+    const techSelectEl = document.getElementById('techSelect');
+    const techErrorEl = document.getElementById('techError');
+    const installTypeSelectEl = document.getElementById('installTypeSelect');
+    const installTypeErrorEl = document.getElementById('installTypeError');
+
+    const deviceNameInputEl = document.getElementById('deviceNameInput');
+    const locationInputEl = document.getElementById('locationInput');
+    const deviceNameErrorEl = document.getElementById('deviceNameError');
+    const locationErrorEl = document.getElementById('locationError');
+    const deviceLocationFeedbackEl = document.getElementById('deviceLocationFeedback');
+
+    const activeBranchTagEl = document.getElementById('activeBranchTag');
+    const branchRequiredBadgeEl = document.getElementById('branchRequiredBadge');
+    const completionTextEl = document.getElementById('completionText');
+    const completionBarEl = document.getElementById('completionBar');
+    const completedToggleBtnEl = document.getElementById('completedToggleBtn');
+    const completedCheckBoxEl = document.getElementById('completedCheckBox');
+
+    const emptyQuestionsStateEl = document.getElementById('emptyQuestionsState');
+    const questionsContainerEl = document.getElementById('questionsContainer');
+    const questionsValidationFeedbackEl = document.getElementById('questionsValidationFeedback');
+    const notesInputEl = document.getElementById('notesInput');
+
+    const previewToEl = document.getElementById('previewTo');
+    const previewSubjectEl = document.getElementById('previewSubject');
+    const previewBodyEl = document.getElementById('previewBody');
+
+    const openEmailBtnEl = document.getElementById('openEmailBtn');
+    const copyReportBtnEl = document.getElementById('copyReportBtn');
+    const copyIconDefaultEl = document.getElementById('copyIconDefault');
+    const copyIconSuccessEl = document.getElementById('copyIconSuccess');
+    const copyBtnLabelEl = document.getElementById('copyBtnLabel');
+    const queueOfflineReportBtnEl = document.getElementById('queueOfflineReportBtn');
+
+    const offlineQueueSectionEl = document.getElementById('offlineQueueSection');
+    const queueSectionBadgeCountEl = document.getElementById('queueSectionBadgeCount');
+    const downloadQueueTxtBtnEl = document.getElementById('downloadQueueTxtBtn');
+    const clearAllQueueBtnEl = document.getElementById('clearAllQueueBtn');
+    const offlineQueueEmptyEl = document.getElementById('offlineQueueEmpty');
+    const offlineQueueListEl = document.getElementById('offlineQueueList');
+
+    // =========================================================================
+    // Utility Helpers
+    // =========================================================================
+    function getTodayISO() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function formatAutoTime(dateObj = new Date()) {
+      try {
+        return dateObj.toLocaleString(undefined, {
+          year: 'numeric',
+          month: 'short',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          timeZoneName: 'short'
+        });
+      } catch (err) {
+        return dateObj.toISOString();
+      }
+    }
+
+    function formatClockTime(dateObj = new Date()) {
+      try {
+        return dateObj.toLocaleTimeString(undefined, {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+      } catch (err) {
+        return dateObj.toTimeString().slice(0, 8);
+      }
+    }
+
+    function resolveEmail(value) {
+      const trimmed = typeof value === 'string' ? value.trim() : '';
+      return trimmed || DEFAULT_RECIPIENT_EMAIL;
+    }
+
+    function isEffectivelyOnline() {
+      if (state.simulatedOffline) return false;
+      return Boolean(state.isOnline);
+    }
+
+    function showToast(message, variant = 'info') {
+      if (!toastContainerEl) return;
+      const styles = {
+        success: 'bg-emerald-900 text-emerald-100 border-emerald-700',
+        error: 'bg-rose-900 text-rose-100 border-rose-700',
+        info: 'bg-slate-900 text-slate-100 border-slate-700'
+      };
+      const el = document.createElement('div');
+      el.className = `pointer-events-auto px-4 py-3 rounded-xl border shadow-lg text-xs sm:text-sm font-semibold transition-all duration-200 ${styles[variant] || styles.info}`;
+      el.textContent = message;
+      toastContainerEl.appendChild(el);
+
+      setTimeout(() => {
+        el.classList.add('opacity-0', 'translate-y-1');
+        setTimeout(() => el.remove(), 220);
+      }, 2800);
+    }
+
+    function safeReadStorage(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return fallback;
+        return JSON.parse(raw);
+      } catch (err) {
+        return fallback;
+      }
+    }
+
+    function safeWriteStorage(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (err) {
+        // Ignore storage write restrictions
+      }
+    }
+
+    function copyText(text) {
+      if (typeof document === 'undefined') return false;
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.top = '-9999px';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+
+      let copied = false;
+      try {
+        textarea.select();
+        textarea.setSelectionRange(0, textarea.value.length);
+        copied = document.execCommand('copy');
+      } catch (err) {
+        copied = false;
+      } finally {
+        document.body.removeChild(textarea);
+      }
+      return copied;
+    }
+
+    // =========================================================================
+    // Auto Time & Live Clock
+    // =========================================================================
+    function refreshAutoTime(sourceLabel = 'Refreshed', notify = false, persist = true) {
+      const now = new Date();
+      state.autoTime = formatAutoTime(now);
+      if (autoTimeDisplayEl) autoTimeDisplayEl.value = state.autoTime;
+      if (timestampMetaTextEl) timestampMetaTextEl.textContent = `Auto Time (${sourceLabel}) updated at ${formatClockTime(now)}.`;
+
+      if (persist) {
+        saveDraft();
+      }
+      updateReportPreview();
+
+      if (notify) {
+        showToast(`Auto Time refreshed: ${state.autoTime}`, 'info');
+      }
+    }
+
+    let liveClockIntervalId = null;
+    function startLiveClock() {
+      const updateClock = () => {
+        if (liveClockBadgeEl) {
+          liveClockBadgeEl.textContent = `Clock: ${formatClockTime(new Date())}`;
+        }
+      };
+      updateClock();
+      if (liveClockIntervalId) {
+        clearInterval(liveClockIntervalId);
+      }
+      liveClockIntervalId = setInterval(updateClock, 1000);
+    }
+
+    // =========================================================================
+    // Draft & Queue Persistence (localStorage)
+    // =========================================================================
+    function saveDraft() {
+      const emailValue = resolveEmail(state.recipientEmail);
+      try {
+        localStorage.setItem(STORAGE_KEY_EMAIL, emailValue);
+      } catch (err) {
+        // Safe fallback
+      }
+
+      const draftPayload = {
+        recipientEmail: emailValue,
+        autoTime: state.autoTime || '',
+        reportDate: state.reportDate || getTodayISO(),
+        dc: state.dc || '',
+        techName: state.techName || '',
+        installType: state.installType || '',
+        deviceName: state.deviceName || '',
+        location: state.location || '',
+        completed: Boolean(state.completed),
+        notes: state.notes || '',
+        answers: state.answers || {}
+      };
+
+      safeWriteStorage(STORAGE_KEY_DRAFT, draftPayload);
+      if (draftSaveBadgeEl) {
+        draftSaveBadgeEl.textContent = 'Draft saved in localStorage';
+      }
+    }
+
+    function loadDraft() {
+      let persistedEmail = '';
+      try {
+        persistedEmail = localStorage.getItem(STORAGE_KEY_EMAIL) || '';
+      } catch (err) {
+        persistedEmail = '';
+      }
+
+      const draft = safeReadStorage(STORAGE_KEY_DRAFT, null);
+      const effectiveEmail = resolveEmail(
+        (draft && draft.recipientEmail) || persistedEmail || DEFAULT_RECIPIENT_EMAIL
+      );
+      state.recipientEmail = effectiveEmail;
+      if (recipientEmailEl) recipientEmailEl.value = effectiveEmail;
+
+      if (!draft || typeof draft !== 'object') return;
+
+      if (typeof draft.reportDate === 'string' && draft.reportDate) {
+        state.reportDate = draft.reportDate;
+        if (reportDateEl) reportDateEl.value = draft.reportDate;
+      }
+
+      if (typeof draft.autoTime === 'string' && draft.autoTime) {
+        state.autoTime = draft.autoTime;
+        if (autoTimeDisplayEl) autoTimeDisplayEl.value = draft.autoTime;
+        if (timestampMetaTextEl) timestampMetaTextEl.textContent = 'Restored Auto Time from saved draft.';
+      }
+
+      if (typeof draft.dc === 'string' && draft.dc) {
+        state.dc = draft.dc;
+        if (dcSelectEl) dcSelectEl.value = draft.dc;
+      }
+
+      if (typeof draft.techName === 'string' && draft.techName) {
+        state.techName = draft.techName;
+        if (techSelectEl) techSelectEl.value = draft.techName;
+      }
+
+      if (typeof draft.deviceName === 'string') {
+        state.deviceName = draft.deviceName;
+        if (deviceNameInputEl) deviceNameInputEl.value = draft.deviceName;
+      }
+
+      if (typeof draft.location === 'string') {
+        state.location = draft.location;
+        if (locationInputEl) locationInputEl.value = draft.location;
+      }
+
+      if (typeof draft.notes === 'string') {
+        state.notes = draft.notes;
+        if (notesInputEl) notesInputEl.value = draft.notes;
+      }
+
+      state.completed = Boolean(draft.completed);
+
+      if (typeof draft.installType === 'string' && CHECKLIST_QUESTIONS[draft.installType]) {
+        state.installType = draft.installType;
+        if (installTypeSelectEl) installTypeSelectEl.value = draft.installType;
+
+        const branchItems = CHECKLIST_QUESTIONS[draft.installType];
+        const restoredAnswers = {};
+        branchItems.forEach((item) => {
+          const ans = draft.answers && draft.answers[item.id];
+          restoredAnswers[item.id] = ans === 'Yes' || ans === 'No' ? ans : null;
+        });
+        state.answers = restoredAnswers;
+      }
+    }
+
+    function loadQueue() {
+      const savedQueue = safeReadStorage(STORAGE_KEY_QUEUE, []);
+      state.queue = Array.isArray(savedQueue) ? savedQueue : [];
+    }
+
+    function saveQueue() {
+      safeWriteStorage(STORAGE_KEY_QUEUE, state.queue);
+      renderQueue();
+      syncReconnectBanner();
+    }
+
+    // =========================================================================
+    // Connectivity & Reconnection Banner
+    // =========================================================================
+    function syncReconnectBanner() {
+      const online = isEffectivelyOnline();
+      const pending = state.queue.length;
+
+      if (online && pending > 0 && !state.reconnectDismissed) {
+        reconnectMessageEl.textContent = `Connection restored — ${pending} queued report${pending === 1 ? '' : 's'} ready.`;
+        reconnectBannerEl.classList.remove('hidden');
+      } else {
+        reconnectBannerEl.classList.add('hidden');
+      }
+    }
+
+    function syncConnectivityUI(justReconnected = false) {
+      const online = isEffectivelyOnline();
+
+      if (online) {
+        connectivityPillBtnEl.className = 'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer bg-emerald-950/80 text-emerald-300 border-emerald-700/70';
+        connectivityDotEl.className = 'w-2 h-2 rounded-full bg-emerald-400';
+        connectivityLabelEl.textContent = 'Online';
+      } else {
+        connectivityPillBtnEl.className = 'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer bg-amber-950/90 text-amber-300 border-amber-500/70';
+        connectivityDotEl.className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+        connectivityLabelEl.textContent = state.simulatedOffline ? 'Offline (Simulated)' : 'Offline';
+      }
+
+      if (state.simulatedOffline) {
+        simOfflineToggleBtnEl.textContent = 'Simulate Offline: ON';
+        simOfflineToggleBtnEl.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-300 hover:bg-amber-200 text-slate-950 ring-2 ring-amber-400 transition cursor-pointer';
+      } else {
+        simOfflineToggleBtnEl.textContent = 'Simulate Offline: OFF';
+        simOfflineToggleBtnEl.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition cursor-pointer';
+      }
+
+      if (justReconnected) {
+        state.reconnectDismissed = false;
+      }
+
+      syncReconnectBanner();
+    }
+
+    function handleConnectivityChange(onlineState) {
+      const wasOnline = isEffectivelyOnline();
+      state.isOnline = Boolean(onlineState);
+      const nowOnline = isEffectivelyOnline();
+      const justReconnected = !wasOnline && nowOnline;
+
+      syncConnectivityUI(justReconnected);
+
+      if (justReconnected) {
+        showToast('Back online — connection restored.', 'success');
+      } else if (wasOnline && !nowOnline) {
+        showToast('Offline — use Queue / Save Offline Report to store reports locally.', 'info');
+      }
+    }
+
+    // =========================================================================
+    // Live Completion Percentage & Independent "Completed" Toggle
+    // =========================================================================
+    function getCompletionMetrics() {
+      const items = CHECKLIST_QUESTIONS[state.installType] || [];
+      const total = items.length;
+      if (total === 0) {
+        return { yesCount: 0, answeredCount: 0, total: 0, percentage: 0 };
+      }
+
+      let yesCount = 0;
+      let answeredCount = 0;
+      items.forEach((item) => {
+        const val = state.answers[item.id];
+        if (val === 'Yes' || val === 'No') {
+          answeredCount += 1;
+        }
+        if (val === 'Yes') {
+          yesCount += 1;
+        }
+      });
+
+      const percentage = Math.round((yesCount / total) * 100);
+      return { yesCount, answeredCount, total, percentage };
+    }
+
+    function getUnansweredQuestions() {
+      if (!state.installType) return [];
+      const items = CHECKLIST_QUESTIONS[state.installType] || [];
+      return items.filter((item) => state.answers[item.id] !== 'Yes' && state.answers[item.id] !== 'No');
+    }
+
+    function renderCompletedToggle() {
+      if (state.completed) {
+        completedToggleBtnEl.setAttribute('aria-pressed', 'true');
+        completedToggleBtnEl.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer bg-emerald-600 text-white border-emerald-700 shadow-2xs';
+        completedCheckBoxEl.className = 'w-4 h-4 rounded border border-white flex items-center justify-center text-[11px] leading-none bg-emerald-700 text-white';
+      } else {
+        completedToggleBtnEl.setAttribute('aria-pressed', 'false');
+        completedToggleBtnEl.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer bg-white text-slate-700 border-slate-300 hover:bg-slate-100';
+        completedCheckBoxEl.className = 'w-4 h-4 rounded border border-slate-400 flex items-center justify-center text-[11px] leading-none bg-white text-transparent';
+      }
+    }
+
+    function renderQuestions() {
+      const items = CHECKLIST_QUESTIONS[state.installType] || [];
+
+      if (!state.installType || items.length === 0) {
+        activeBranchTagEl.classList.add('hidden');
+        activeBranchTagEl.textContent = '';
+        branchRequiredBadgeEl.classList.add('hidden');
+        emptyQuestionsStateEl.classList.remove('hidden');
+        questionsContainerEl.classList.add('hidden');
+        questionsContainerEl.innerHTML = '';
+        questionsValidationFeedbackEl.classList.add('hidden');
+        return;
+      }
+
+      activeBranchTagEl.textContent = state.installType;
+      activeBranchTagEl.classList.remove('hidden');
+      branchRequiredBadgeEl.classList.remove('hidden');
+      emptyQuestionsStateEl.classList.add('hidden');
+      questionsContainerEl.classList.remove('hidden');
+      questionsContainerEl.innerHTML = '';
+
+      items.forEach((item, idx) => {
+        const selected = state.answers[item.id] || null;
+        const isYes = selected === 'Yes';
+        const isNo = selected === 'No';
+        const isUnansweredRequired = state.showValidationErrors && !isYes && !isNo;
+
+        const row = document.createElement('div');
+        row.setAttribute('data-question-id', item.id);
+        row.className = `flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border transition ${
+          isUnansweredRequired
+            ? 'bg-rose-50/70 border-rose-400 ring-2 ring-rose-200'
+            : isYes
+            ? 'bg-emerald-50/50 border-emerald-200'
+            : isNo
+            ? 'bg-rose-50/50 border-rose-200'
+            : 'bg-slate-50/70 border-slate-200/90'
+        }`;
+
+        const left = document.createElement('div');
+        left.className = 'flex flex-wrap items-center gap-2 pr-2';
+
+        const indexBadge = document.createElement('span');
+        indexBadge.className = 'w-5 h-5 rounded-md bg-white border border-slate-300 text-[11px] font-bold text-slate-600 flex items-center justify-center shrink-0 tabular-nums';
+        indexBadge.textContent = String(idx + 1);
+
+        const questionLabel = document.createElement('span');
+        questionLabel.className = 'text-sm font-medium text-slate-800';
+        questionLabel.textContent = item.label;
+
+        const reqTag = document.createElement('span');
+        reqTag.className = 'text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 border border-rose-200';
+        reqTag.textContent = 'Required';
+
+        left.appendChild(indexBadge);
+        left.appendChild(questionLabel);
+        left.appendChild(reqTag);
+
+        if (isUnansweredRequired) {
+          const missingHint = document.createElement('span');
+          missingHint.className = 'w-full sm:w-auto text-xs font-semibold text-rose-700';
+          missingHint.textContent = 'Select Yes or No';
+          left.appendChild(missingHint);
+        }
+
+        const btnGroup = document.createElement('div');
+        btnGroup.className = 'flex items-center gap-2 shrink-0 self-end sm:self-center';
+
+        const yesBtn = document.createElement('button');
+        yesBtn.type = 'button';
+        yesBtn.textContent = 'Yes';
+        yesBtn.setAttribute('aria-pressed', String(isYes));
+        yesBtn.setAttribute('aria-required', 'true');
+        yesBtn.className = `px-4 py-1.5 rounded-lg text-xs font-extrabold border transition cursor-pointer ${
+          isYes
+            ? 'bg-emerald-600 text-white border-emerald-700 shadow-2xs'
+            : 'bg-white text-slate-700 border-slate-300 hover:bg-emerald-50 hover:border-emerald-300'
+        }`;
+        yesBtn.addEventListener('click', () => {
+          state.answers[item.id] = state.answers[item.id] === 'Yes' ? null : 'Yes';
+          saveDraft();
+          renderQuestions();
+          syncValidationFeedback(state.showValidationErrors);
+          updateCompletionAndPreview();
+        });
+
+        const noBtn = document.createElement('button');
+        noBtn.type = 'button';
+        noBtn.textContent = 'No';
+        noBtn.setAttribute('aria-pressed', String(isNo));
+        noBtn.setAttribute('aria-required', 'true');
+        noBtn.className = `px-4 py-1.5 rounded-lg text-xs font-extrabold border transition cursor-pointer ${
+          isNo
+            ? 'bg-rose-600 text-white border-rose-700 shadow-2xs'
+            : 'bg-white text-slate-700 border-slate-300 hover:bg-rose-50 hover:border-rose-300'
+        }`;
+        noBtn.addEventListener('click', () => {
+          state.answers[item.id] = state.answers[item.id] === 'No' ? null : 'No';
+          saveDraft();
+          renderQuestions();
+          syncValidationFeedback(state.showValidationErrors);
+          updateCompletionAndPreview();
+        });
+
+        btnGroup.appendChild(yesBtn);
+        btnGroup.appendChild(noBtn);
+
+        row.appendChild(left);
+        row.appendChild(btnGroup);
+        questionsContainerEl.appendChild(row);
+      });
+    }
+
+    function updateCompletionAndPreview() {
+      const { yesCount, total, percentage } = getCompletionMetrics();
+      completionTextEl.textContent = `${percentage}% (${yesCount}/${total} Yes)`;
+      completionBarEl.style.width = `${percentage}%`;
+      renderCompletedToggle();
+      updateReportPreview();
+    }
+
+    // =========================================================================
+    // Validation & Formatted Report Builder
+    // =========================================================================
+    function syncValidationFeedback(showErrors = false) {
+      const dcMissing = !state.dc;
+      const techMissing = !state.techName;
+      const installTypeMissing = !state.installType;
+      const deviceMissing = !(state.deviceName || '').trim();
+      const locationMissing = !(state.location || '').trim();
+      const unansweredQuestions = getUnansweredQuestions();
+
+      const errorClasses = ['border-rose-500', 'ring-2', 'ring-rose-200'];
+
+      if (showErrors && dcMissing) {
+        dcSelectEl.classList.add(...errorClasses);
+        dcErrorEl.classList.remove('hidden');
+      } else if (!dcMissing) {
+        dcSelectEl.classList.remove(...errorClasses);
+        dcErrorEl.classList.add('hidden');
+      }
+
+      if (showErrors && techMissing) {
+        techSelectEl.classList.add(...errorClasses);
+        techErrorEl.classList.remove('hidden');
+      } else if (!techMissing) {
+        techSelectEl.classList.remove(...errorClasses);
+        techErrorEl.classList.add('hidden');
+      }
+
+      if (showErrors && installTypeMissing) {
+        installTypeSelectEl.classList.add('border-rose-500', 'ring-2', 'ring-rose-400');
+        installTypeErrorEl.classList.remove('hidden');
+      } else if (!installTypeMissing) {
+        installTypeSelectEl.classList.remove('border-rose-500', 'ring-2', 'ring-rose-400');
+        installTypeErrorEl.classList.add('hidden');
+      }
+
+      if (showErrors && deviceMissing) {
+        deviceNameInputEl.classList.add(...errorClasses);
+        deviceNameErrorEl.classList.remove('hidden');
+      } else if (!deviceMissing) {
+        deviceNameInputEl.classList.remove(...errorClasses);
+        deviceNameErrorEl.classList.add('hidden');
+      }
+
+      if (showErrors && locationMissing) {
+        locationInputEl.classList.add(...errorClasses);
+        locationErrorEl.classList.remove('hidden');
+      } else if (!locationMissing) {
+        locationInputEl.classList.remove(...errorClasses);
+        locationErrorEl.classList.add('hidden');
+      }
+
+      if (showErrors && (deviceMissing || locationMissing)) {
+        const missingDevLoc = [];
+        if (deviceMissing) missingDevLoc.push('Device Name');
+        if (locationMissing) missingDevLoc.push('Location');
+        deviceLocationFeedbackEl.textContent = `Required field missing: please enter ${missingDevLoc.join(' and ')} in Device & Location.`;
+        deviceLocationFeedbackEl.classList.remove('hidden');
+      } else if (!deviceMissing && !locationMissing) {
+        deviceLocationFeedbackEl.classList.add('hidden');
+      }
+
+      if (showErrors && state.installType && unansweredQuestions.length > 0) {
+        const names = unansweredQuestions.map((q) => q.label).join(', ');
+        questionsValidationFeedbackEl.textContent = `All ${state.installType} Yes/No items are required. Please answer: ${names}.`;
+        questionsValidationFeedbackEl.classList.remove('hidden');
+      } else {
+        questionsValidationFeedbackEl.classList.add('hidden');
+      }
+    }
+
+    function validateBeforeAction() {
+      state.showValidationErrors = true;
+      renderQuestions();
+      syncValidationFeedback(true);
+
+      const missing = [];
+      let firstInvalid = null;
+
+      if (!state.dc) {
+        missing.push('DC Selector');
+        if (!firstInvalid) firstInvalid = dcSelectEl;
+      }
+      if (!state.techName) {
+        missing.push('Tech Name');
+        if (!firstInvalid) firstInvalid = techSelectEl;
+      }
+      if (!state.installType) {
+        missing.push('Installation Type');
+        if (!firstInvalid) firstInvalid = installTypeSelectEl;
+      }
+      if (!(state.deviceName || '').trim()) {
+        missing.push('Device Name');
+        if (!firstInvalid) firstInvalid = deviceNameInputEl;
+      }
+      if (!(state.location || '').trim()) {
+        missing.push('Location');
+        if (!firstInvalid) firstInvalid = locationInputEl;
+      }
+
+      const unansweredQuestions = getUnansweredQuestions();
+      if (state.installType && unansweredQuestions.length > 0) {
+        missing.push(`${state.installType} Yes/No (${unansweredQuestions.length} unanswered)`);
+        if (!firstInvalid) {
+          const firstRow = questionsContainerEl.querySelector(`[data-question-id="${unansweredQuestions[0].id}"]`);
+          firstInvalid = firstRow || questionsContainerEl;
+        }
+      }
+
+      if (missing.length > 0) {
+        showToast(`Required fields missing: ${missing.join(', ')}`, 'error');
+        if (firstInvalid && typeof firstInvalid.scrollIntoView === 'function') {
+          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          if (typeof firstInvalid.focus === 'function') {
+            firstInvalid.focus();
+          }
+        }
+        return false;
+      }
+
+      state.showValidationErrors = false;
+      renderQuestions();
+      syncValidationFeedback(false);
+      return true;
+    }
+
+    function buildReport() {
+      const to = resolveEmail(state.recipientEmail);
+      const dc = state.dc || '[Not Selected]';
+      const techName = state.techName || '[Not Selected]';
+      const installType = state.installType || '[Not Selected]';
+      const deviceName = (state.deviceName || '').trim() || '[Required]';
+      const location = (state.location || '').trim() || '[Required]';
+      const completedStatus = state.completed ? 'Yes' : 'No';
+      const autoTime = state.autoTime || formatAutoTime(new Date());
+      const reportDate = state.reportDate || getTodayISO();
+      const notes = (state.notes || '').trim();
+
+      const { yesCount, total, percentage } = getCompletionMetrics();
+      const items = CHECKLIST_QUESTIONS[state.installType] || [];
+
+      const subject = [
+        '[Lead Tech Daily Field Checklist]',
+        dc,
+        installType,
+        (state.deviceName || '').trim() || 'Device',
+        (state.location || '').trim() || 'Location',
+        state.completed ? 'Completed' : 'Not Completed',
+        techName
+      ].join(' - ');
+
+      const lines = [
+        'LEAD TECH DAILY FIELD CHECKLIST',
+        '========================================',
+        `Recipient Email:   ${to}`,
+        `Report Date:       ${reportDate}`,
+        `Auto Time:         ${autoTime}`,
+        `DC Selector:       ${dc}`,
+        `Tech Name:         ${techName}`,
+        `Installation Type: ${installType}`,
+        `Device Name:       ${deviceName}`,
+        `Location:          ${location}`,
+        `Completed:         ${completedStatus}`
+      ];
+
+      if (total > 0) {
+        lines.push(`Checklist Score:   ${percentage}% (${yesCount}/${total} Yes)`);
+      }
+
+      lines.push('');
+      lines.push('CHECKLIST:');
+      lines.push('----------------------------------------');
+
+      if (items.length === 0) {
+        lines.push('(No Installation Type selected)');
+      } else {
+        items.forEach((item) => {
+          const val = state.answers[item.id] || 'Unanswered';
+          lines.push(`${item.label}: ${val}`);
+        });
+      }
+
+      lines.push('');
+      lines.push('NOTES:');
+      lines.push('----------------------------------------');
+      lines.push(notes || '(None)');
+      lines.push('========================================');
+
+      return {
+        to,
+        subject,
+        body: lines.join('\n')
+      };
+    }
+
+    function updateReportPreview() {
+      const report = buildReport();
+      if (previewToEl) previewToEl.textContent = report.to;
+      if (previewSubjectEl) previewSubjectEl.textContent = report.subject;
+      if (previewBodyEl) previewBodyEl.textContent = report.body;
+    }
+
+    // =========================================================================
+    // Email, Copy & Offline Queue Actions
+    // =========================================================================
+    function openMailto(toAddr, subject, body) {
+      const encodedTo = encodeURIComponent(resolveEmail(toAddr));
+      const encodedSubject = encodeURIComponent(subject || '');
+      const encodedBody = encodeURIComponent(body || '');
+      window.location.href = `mailto:${encodedTo}?subject=${encodedSubject}&body=${encodedBody}`;
+    }
+
+    function addReportToQueue(silent = false) {
+      refreshAutoTime('Queued', false, true);
+      const report = buildReport();
+
+      const record = {
+        id: `q_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        autoTime: state.autoTime,
+        dc: state.dc,
+        techName: state.techName,
+        installType: state.installType,
+        deviceName: (state.deviceName || '').trim(),
+        location: (state.location || '').trim(),
+        completed: Boolean(state.completed),
+        to: report.to,
+        subject: report.subject,
+        body: report.body
+      };
+
+      state.queue.unshift(record);
+      saveQueue();
+
+      if (!silent) {
+        showToast(`Queued offline report for ${record.deviceName} (${record.dc}).`, 'success');
+      }
+      return record;
+    }
+
+    function handleOpenEmail() {
+      if (!validateBeforeAction()) return;
+
+      if (!isEffectivelyOnline()) {
+        addReportToQueue(true);
+        showToast('Offline — warning: no active connection, report saved to Offline Report Queue.', 'info');
+        return;
+      }
+
+      refreshAutoTime('Email', false, true);
+      const report = buildReport();
+      try {
+        openMailto(report.to, report.subject, report.body);
+        showToast(`Opening email to ${report.to}...`, 'success');
+      } catch (err) {
+        addReportToQueue(true);
+        showToast('Could not open mail client — report saved to Offline Report Queue.', 'info');
+      }
+    }
+
+    function handleCopyReport() {
+      if (!validateBeforeAction()) return;
+
+      refreshAutoTime('Copied', false, true);
+      const report = buildReport();
+      const fullPayload = `To: ${report.to}\nSubject: ${report.subject}\n\n${report.body}`;
+
+      if (copyText(fullPayload)) {
+        copyBtnLabelEl.textContent = 'Copied!';
+        copyIconDefaultEl.classList.add('hidden');
+        copyIconSuccessEl.classList.remove('hidden');
+        showToast('Report copied to clipboard.', 'success');
+
+        setTimeout(() => {
+          copyBtnLabelEl.textContent = 'Copy Report';
+          copyIconDefaultEl.classList.remove('hidden');
+          copyIconSuccessEl.classList.add('hidden');
+        }, 2000);
+      } else {
+        showToast('Could not copy report to clipboard.', 'error');
+      }
+    }
+
+    function handleQueueOfflineReport() {
+      if (!validateBeforeAction()) return;
+      addReportToQueue(false);
+    }
+
+    // =========================================================================
+    // Offline Report Queue Management (Copy, Download .txt, Open Email, Delete, Clear All)
+    // =========================================================================
+    function queueCopyItem(id) {
+      const entry = state.queue.find((item) => item.id === id);
+      if (!entry) return;
+
+      const text = `To: ${resolveEmail(entry.to)}\nSubject: ${entry.subject}\n\n${entry.body}`;
+      if (copyText(text)) {
+        showToast(`Copied queued report (${entry.deviceName}).`, 'success');
+      } else {
+        showToast('Failed to copy queued report.', 'error');
+      }
+    }
+
+    function queueOpenEmailItem(id) {
+      const entry = state.queue.find((item) => item.id === id);
+      if (!entry) return;
+
+      if (!isEffectivelyOnline()) {
+        showToast('Offline — reconnect or turn off Simulate Offline to open email.', 'error');
+        return;
+      }
+
+      openMailto(entry.to, entry.subject, entry.body);
+      showToast(`Opening email for ${entry.deviceName}...`, 'success');
+    }
+
+    function queueDeleteItem(id) {
+      state.queue = state.queue.filter((item) => item.id !== id);
+      saveQueue();
+      showToast('Deleted report from Offline Report Queue.', 'info');
+    }
+
+    function handleDownloadQueueTxt() {
+      if (state.queue.length === 0) return;
+
+      const content = state.queue
+        .map((entry, idx) => {
+          return [
+            '====================================================================',
+            `REPORT #${idx + 1} | Auto Time: ${entry.autoTime}`,
+            `To:      ${resolveEmail(entry.to)}`,
+            `Subject: ${entry.subject}`,
+            '====================================================================',
+            entry.body,
+            ''
+          ].join('\n');
+        })
+        .join('\n');
+
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Lead_Tech_Offline_Queue_${getTodayISO()}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+      showToast(`Downloaded ${state.queue.length} queued report(s) as .txt.`, 'success');
+    }
+
+    function handleClearAllQueue() {
+      if (state.queue.length === 0) return;
+      state.queue = [];
+      saveQueue();
+      showToast('Cleared all reports from Offline Report Queue.', 'info');
+    }
+
+    function renderQueue() {
+      const count = state.queue.length;
+      if (headerQueueCountEl) headerQueueCountEl.textContent = String(count);
+      if (queueSectionBadgeCountEl) queueSectionBadgeCountEl.textContent = String(count);
+
+      if (downloadQueueTxtBtnEl) downloadQueueTxtBtnEl.disabled = count === 0;
+      if (clearAllQueueBtnEl) clearAllQueueBtnEl.disabled = count === 0;
+
+      if (count === 0) {
+        if (offlineQueueEmptyEl) offlineQueueEmptyEl.classList.remove('hidden');
+        if (offlineQueueListEl) {
+          offlineQueueListEl.classList.add('hidden');
+          offlineQueueListEl.innerHTML = '';
+        }
+        return;
+      }
+
+      if (offlineQueueEmptyEl) offlineQueueEmptyEl.classList.add('hidden');
+      if (offlineQueueListEl) {
+        offlineQueueListEl.classList.remove('hidden');
+        offlineQueueListEl.innerHTML = '';
+      }
+
+      state.queue.forEach((entry) => {
+        const card = document.createElement('div');
+        card.className = 'rounded-xl border border-slate-200 bg-slate-50/70 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3';
+
+        const info = document.createElement('div');
+        info.className = 'space-y-1 min-w-0';
+
+        const badges = document.createElement('div');
+        badges.className = 'flex flex-wrap items-center gap-1.5';
+
+        const dcBadge = document.createElement('span');
+        dcBadge.className = 'px-2 py-0.5 rounded-md bg-slate-900 text-emerald-300 text-xs font-bold';
+        dcBadge.textContent = entry.dc || '-';
+
+        const typeBadge = document.createElement('span');
+        typeBadge.className = 'text-xs sm:text-sm font-bold text-slate-900';
+        typeBadge.textContent = entry.installType || '-';
+
+        const devBadge = document.createElement('span');
+        devBadge.className = 'px-2 py-0.5 rounded-md bg-white border border-slate-300 text-xs font-bold text-slate-800';
+        devBadge.textContent = `Device: ${entry.deviceName || '-'}`;
+
+        const locBadge = document.createElement('span');
+        locBadge.className = 'px-2 py-0.5 rounded-md bg-white border border-slate-200 text-xs font-semibold text-slate-600';
+        locBadge.textContent = `Location: ${entry.location || '-'}`;
+
+        const doneBadge = document.createElement('span');
+        doneBadge.className = entry.completed
+          ? 'px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold'
+          : 'px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold';
+        doneBadge.textContent = entry.completed ? 'Completed: Yes' : 'Completed: No';
+
+        badges.appendChild(dcBadge);
+        badges.appendChild(typeBadge);
+        badges.appendChild(devBadge);
+        badges.appendChild(locBadge);
+        badges.appendChild(doneBadge);
+
+        const subline = document.createElement('p');
+        subline.className = 'text-[11px] font-mono text-slate-500';
+        subline.textContent = `Tech: ${entry.techName || '-'} • Auto Time: ${entry.autoTime || '-'}`;
+
+        info.appendChild(badges);
+        info.appendChild(subline);
+
+        const actions = document.createElement('div');
+        actions.className = 'flex flex-wrap items-center gap-2 shrink-0 self-end sm:self-center';
+
+        const openEmailItemBtn = document.createElement('button');
+        openEmailItemBtn.type = 'button';
+        openEmailItemBtn.textContent = 'Open Email';
+        openEmailItemBtn.className = 'px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition cursor-pointer';
+        openEmailItemBtn.addEventListener('click', () => queueOpenEmailItem(entry.id));
+
+        const copyItemBtn = document.createElement('button');
+        copyItemBtn.type = 'button';
+        copyItemBtn.textContent = 'Copy';
+        copyItemBtn.className = 'px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-bold transition cursor-pointer';
+        copyItemBtn.addEventListener('click', () => queueCopyItem(entry.id));
+
+        const deleteItemBtn = document.createElement('button');
+        deleteItemBtn.type = 'button';
+        deleteItemBtn.textContent = 'Delete';
+        deleteItemBtn.className = 'px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition cursor-pointer';
+        deleteItemBtn.addEventListener('click', () => queueDeleteItem(entry.id));
+
+        actions.appendChild(openEmailItemBtn);
+        actions.appendChild(copyItemBtn);
+        actions.appendChild(deleteItemBtn);
+
+        card.appendChild(info);
+        card.appendChild(actions);
+        if (offlineQueueListEl) offlineQueueListEl.appendChild(card);
+      });
+    }
+
+    // =========================================================================
+    // Test Mode Controls
+    // =========================================================================
+    function setTestModeOpen(open) {
+      state.testModeOpen = Boolean(open);
+      toggleTestModeBtnEl.setAttribute('aria-expanded', String(state.testModeOpen));
+      if (state.testModeOpen) {
+        testModeBarEl.classList.remove('hidden');
+        testModeChevronEl.textContent = '▲';
+      } else {
+        testModeBarEl.classList.add('hidden');
+        testModeChevronEl.textContent = '▼';
+      }
+    }
+
+    function applyTestPreset(branchName) {
+      const preset = TEST_PRESETS[branchName];
+      const items = CHECKLIST_QUESTIONS[branchName];
+      if (!preset || !items) return;
+
+      state.dc = preset.dc;
+      state.techName = preset.techName;
+      state.deviceName = preset.deviceName;
+      state.location = preset.location;
+      state.installType = branchName;
+      state.completed = Boolean(preset.completed);
+      state.notes = preset.notes;
+      state.showValidationErrors = false;
+
+      dcSelectEl.value = preset.dc;
+      techSelectEl.value = preset.techName;
+      deviceNameInputEl.value = preset.deviceName;
+      locationInputEl.value = preset.location;
+      installTypeSelectEl.value = branchName;
+      notesInputEl.value = preset.notes;
+
+      const nextAnswers = {};
+      items.forEach((item) => {
+        const val = preset.answers[item.id];
+        nextAnswers[item.id] = val === 'Yes' || val === 'No' ? val : null;
+      });
+      state.answers = nextAnswers;
+
+      syncValidationFeedback(false);
+      refreshAutoTime(`Preset: ${branchName}`, false, true);
+      renderQuestions();
+      updateCompletionAndPreview();
+      showToast(`Quick-filled valid data for ${branchName}.`, 'info');
+    }
+
+    function cycleInstallationBranch() {
+      const currentIdx = INSTALLATION_TYPES.indexOf(state.installType);
+      const nextIdx = currentIdx === -1 ? 0 : (currentIdx + 1) % INSTALLATION_TYPES.length;
+      const nextBranch = INSTALLATION_TYPES[nextIdx];
+
+      state.installType = nextBranch;
+      installTypeSelectEl.value = nextBranch;
+      state.showValidationErrors = false;
+
+      const nextAnswers = {};
+      (CHECKLIST_QUESTIONS[nextBranch] || []).forEach((item) => {
+        nextAnswers[item.id] = null;
+      });
+      state.answers = nextAnswers;
+
+      syncValidationFeedback(false);
+      saveDraft();
+      renderQuestions();
+      updateCompletionAndPreview();
+      showToast(`Switched branch to ${nextBranch}.`, 'info');
+    }
+
+    function applyBulkAnswers(mode) {
+      const items = CHECKLIST_QUESTIONS[state.installType];
+      if (!items || items.length === 0) {
+        showToast('Select an Installation Type first.', 'error');
+        return;
+      }
+
+      items.forEach((item, idx) => {
+        if (mode === 'Yes') state.answers[item.id] = 'Yes';
+        else if (mode === 'No') state.answers[item.id] = 'No';
+        else state.answers[item.id] = idx % 2 === 0 ? 'Yes' : 'No';
+      });
+
+      saveDraft();
+      renderQuestions();
+      syncValidationFeedback(state.showValidationErrors);
+      updateCompletionAndPreview();
+      showToast(`Set ${mode} answers for ${state.installType}.`, 'info');
+    }
+
+    function resetStorageAndDraft() {
+      try {
+        localStorage.removeItem(STORAGE_KEY_DRAFT);
+        localStorage.removeItem(STORAGE_KEY_QUEUE);
+        localStorage.removeItem(STORAGE_KEY_EMAIL);
+      } catch (err) {
+        // Safe fallback
+      }
+
+      const today = getTodayISO();
+      state.recipientEmail = DEFAULT_RECIPIENT_EMAIL;
+      state.reportDate = today;
+      state.dc = '';
+      state.techName = '';
+      state.installType = '';
+      state.deviceName = '';
+      state.location = '';
+      state.completed = false;
+      state.notes = '';
+      state.answers = {};
+      state.showValidationErrors = false;
+      state.queue = [];
+      state.simulatedOffline = false;
+      state.reconnectDismissed = false;
+
+      recipientEmailEl.value = DEFAULT_RECIPIENT_EMAIL;
+      reportDateEl.value = today;
+      dcSelectEl.value = '';
+      techSelectEl.value = '';
+      installTypeSelectEl.value = '';
+      deviceNameInputEl.value = '';
+      locationInputEl.value = '';
+      notesInputEl.value = '';
+
+      syncValidationFeedback(false);
+      deviceLocationFeedbackEl.classList.add('hidden');
+      refreshAutoTime('Reset', false, true);
+      renderQuestions();
+      updateCompletionAndPreview();
+      renderQueue();
+      syncConnectivityUI(false);
+      showToast('Reset localStorage draft, queue, and recipient email.', 'info');
+    }
+
+    // =========================================================================
+    // Event Listeners & Guarded Inline Blob Service Worker
+    // =========================================================================
+    let eventsBound = false;
+    function bindEvents() {
+      if (eventsBound) return;
+      eventsBound = true;
+
+      recipientEmailEl.addEventListener('input', (e) => {
+        state.recipientEmail = resolveEmail(e.target.value);
+        saveDraft();
+        updateReportPreview();
+      });
+
+      refreshTimestampBtnEl.addEventListener('click', () => {
+        refreshAutoTime('Manual Refresh', true, true);
+      });
+
+      reportDateEl.addEventListener('change', (e) => {
+        state.reportDate = e.target.value || getTodayISO();
+        saveDraft();
+        updateReportPreview();
+      });
+
+      dcSelectEl.addEventListener('change', (e) => {
+        state.dc = e.target.value;
+        syncValidationFeedback(state.showValidationErrors);
+        saveDraft();
+        updateReportPreview();
+      });
+
+      techSelectEl.addEventListener('change', (e) => {
+        state.techName = e.target.value;
+        syncValidationFeedback(state.showValidationErrors);
+        saveDraft();
+        updateReportPreview();
+      });
+
+      installTypeSelectEl.addEventListener('change', (e) => {
+        const selectedBranch = e.target.value;
+        state.installType = selectedBranch;
+        state.showValidationErrors = false;
+        const freshAnswers = {};
+        (CHECKLIST_QUESTIONS[selectedBranch] || []).forEach((item) => {
+          freshAnswers[item.id] = null;
+        });
+        state.answers = freshAnswers;
+        syncValidationFeedback(false);
+        saveDraft();
+        renderQuestions();
+        updateCompletionAndPreview();
+      });
+
+      deviceNameInputEl.addEventListener('input', (e) => {
+        state.deviceName = e.target.value;
+        syncValidationFeedback(state.showValidationErrors);
+        saveDraft();
+        updateReportPreview();
+      });
+
+      deviceNameInputEl.addEventListener('blur', () => {
+        if (!(state.deviceName || '').trim()) {
+          deviceNameErrorEl.classList.remove('hidden');
+          deviceNameInputEl.classList.add('border-rose-500', 'ring-2', 'ring-rose-200');
+        }
+      });
+
+      locationInputEl.addEventListener('input', (e) => {
+        state.location = e.target.value;
+        syncValidationFeedback(state.showValidationErrors);
+        saveDraft();
+        updateReportPreview();
+      });
+
+      locationInputEl.addEventListener('blur', () => {
+        if (!(state.location || '').trim()) {
+          locationErrorEl.classList.remove('hidden');
+          locationInputEl.classList.add('border-rose-500', 'ring-2', 'ring-rose-200');
+        }
+      });
+
+      completedToggleBtnEl.addEventListener('click', () => {
+        state.completed = !state.completed;
+        renderCompletedToggle();
+        saveDraft();
+        updateReportPreview();
+      });
+
+      notesInputEl.addEventListener('input', (e) => {
+        state.notes = e.target.value;
+        saveDraft();
+        updateReportPreview();
+      });
+
+      openEmailBtnEl.addEventListener('click', handleOpenEmail);
+      copyReportBtnEl.addEventListener('click', handleCopyReport);
+      queueOfflineReportBtnEl.addEventListener('click', handleQueueOfflineReport);
+
+      downloadQueueTxtBtnEl.addEventListener('click', handleDownloadQueueTxt);
+      clearAllQueueBtnEl.addEventListener('click', handleClearAllQueue);
+
+      headerQueueBadgeBtnEl.addEventListener('click', () => {
+        offlineQueueSectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      connectivityPillBtnEl.addEventListener('click', () => {
+        setTestModeOpen(!state.testModeOpen);
+        if (state.testModeOpen) {
+          testModeBarEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+
+      toggleTestModeBtnEl.addEventListener('click', () => {
+        setTestModeOpen(!state.testModeOpen);
+      });
+
+      simOfflineToggleBtnEl.addEventListener('click', () => {
+        const wasOnline = isEffectivelyOnline();
+        state.simulatedOffline = !state.simulatedOffline;
+        const nowOnline = isEffectivelyOnline();
+        const justReconnected = !wasOnline && nowOnline;
+        syncConnectivityUI(justReconnected);
+        showToast(
+          state.simulatedOffline
+            ? 'Simulated Offline mode enabled.'
+            : 'Simulated Offline mode disabled.',
+          'info'
+        );
+      });
+
+      cycleBranchBtnEl.addEventListener('click', cycleInstallationBranch);
+      resetStorageBtnEl.addEventListener('click', resetStorageAndDraft);
+
+      document.querySelectorAll('.quick-branch-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const branch = btn.getAttribute('data-quick-branch');
+          if (branch) applyTestPreset(branch);
+        });
+      });
+
+      testAllYesBtnEl.addEventListener('click', () => applyBulkAnswers('Yes'));
+      testAlternateBtnEl.addEventListener('click', () => applyBulkAnswers('Alternate'));
+      testAllNoBtnEl.addEventListener('click', () => applyBulkAnswers('No'));
+
+      bannerOpenEmailBtnEl.addEventListener('click', () => {
+        reconnectBannerEl.classList.add('hidden');
+        if (state.queue.length > 0 && isEffectivelyOnline()) {
+          const first = state.queue[0];
+          openMailto(first.to, first.subject, first.body);
+          showToast(`Opening email for queued report (${first.deviceName})...`, 'success');
+        }
+      });
+
+      dismissReconnectBtnEl.addEventListener('click', () => {
+        state.reconnectDismissed = true;
+        reconnectBannerEl.classList.add('hidden');
+      });
+
+      window.addEventListener('online', () => handleConnectivityChange(true));
+      window.addEventListener('offline', () => handleConnectivityChange(false));
+    }
+
+    function registerGuardedServiceWorker() {
+      try {
+        if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return;
+        if (!window.location || !['http:', 'https:'].includes(window.location.protocol)) return;
+        if (typeof Blob === 'undefined' || typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') return;
+
+        const swCode = `
+          const CACHE_NAME = 'lead-tech-field-checklist-v1';
+          self.addEventListener('install', (event) => {
+            self.skipWaiting();
+            event.waitUntil(
+              caches.open(CACHE_NAME).then((cache) => cache.addAll([self.registration.scope]).catch(() => {})).catch(() => {})
+            );
+          });
+          self.addEventListener('activate', (event) => {
+            event.waitUntil(
+              caches.keys().then((keys) => Promise.all(
+                keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
+              )).then(() => self.clients.claim()).catch(() => {})
+            );
+          });
+          self.addEventListener('fetch', (event) => {
+            if (event.request.method !== 'GET') return;
+            event.respondWith(
+              caches.match(event.request).then((cached) => {
+                return cached || fetch(event.request).then((response) => {
+                  const copy = response.clone();
+                  caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy)).catch(() => {});
+                  return response;
+                }).catch(() => cached);
+              }).catch(() => undefined)
+            );
+          });
+        `;
+
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const blobUrl = URL.createObjectURL(blob);
+
+        navigator.serviceWorker
+          .register(blobUrl)
+          .then((reg) => {
+            if (reg && typeof reg.update === 'function') {
+              reg.update().catch(() => {});
+            }
+          })
+          .catch(() => {
+            // Ignored on sandboxed or restricted origins
+          })
+          .finally(() => {
+            setTimeout(() => {
+              try {
+                URL.revokeObjectURL(blobUrl);
+              } catch (err) {
+                // Ignore revoke cleanup failure
+              }
+            }, 3000);
+          });
+      } catch (err) {
+        // Safely guarded
+      }
+    }
+
+    function init() {
+      loadQueue();
+
+      const todayISO = getTodayISO();
+      state.reportDate = todayISO;
+      if (reportDateEl) reportDateEl.value = todayISO;
+
+      loadDraft();
+
+      if (!state.reportDate) {
+        state.reportDate = todayISO;
+        if (reportDateEl) reportDateEl.value = todayISO;
+      }
+
+      if (!state.autoTime) {
+        refreshAutoTime('Initial Load', false, true);
+      } else {
+        if (autoTimeDisplayEl) autoTimeDisplayEl.value = state.autoTime;
+        saveDraft();
+      }
+
+      bindEvents();
+      startLiveClock();
+      renderQuestions();
+      updateCompletionAndPreview();
+      renderQueue();
+      syncConnectivityUI(false);
+      registerGuardedServiceWorker();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
